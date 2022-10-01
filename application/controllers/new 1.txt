@@ -1,0 +1,84 @@
+else if(isset($_POST['simpan'])) {
+			if ($this->input->post('bayar') > 0) {
+				//$this->transaksi_models->simpanDetail($post);
+				$this->transaksi_models->updateData($post);
+				//$this->transaksi_models->simpan($post);
+				$this->transaksi_models->emp();
+				
+				if($this->db->affected_rows() > 0){
+					$this->session->set_flashdata('success', 'Data berhasil disimpan');
+				}
+				redirect('transaksi');
+			} else {
+				$this->session->set_flashdata('error', "Jumlah bayar tidak boleh kosong");
+				redirect('transaksi');
+			}
+			
+			
+			
+			//if ($this->input->post('bayar') > 0) {
+				if ($this->transaksi_models->check_barang($post['barcode'])->num_rows() <= 0) {
+					//$this->transaksi_models->simpanDetail($post);
+					$this->transaksi_models->simpanData($post);
+					//$this->transaksi_models->simpan($post);
+					$this->transaksi_models->emp();
+						
+					if($this->db->affected_rows() > 0){
+						$this->session->set_flashdata('success', 'Data berhasil disimpan');
+					}
+					redirect('transaksi');
+				} if ($this->transaksi_models->check_barang($post['barcode'])->num_rows() >= 0) {
+					if ($this->transaksi_models->check_tanggal($post['tanggal'])->num_rows() >= 0) {
+						//$this->transaksi_models->simpanDetail($post);
+						$this->transaksi_models->updateData($post);
+						//$this->transaksi_models->simpan($post);
+						$this->transaksi_models->emp();
+						
+						if($this->db->affected_rows() > 0){
+							$this->session->set_flashdata('success', 'Data berhasil disimpan');
+						}
+						redirect('transaksi');
+					} else {
+						//$this->transaksi_models->simpanDetail($post);
+						$this->transaksi_models->simpanData($post);
+						//$this->transaksi_models->simpan($post);
+						$this->transaksi_models->emp();
+						
+						if($this->db->affected_rows() > 0){
+							$this->session->set_flashdata('success', 'Data berhasil disimpan');
+						}
+						redirect('transaksi');
+					}	
+				}		
+			//} else {
+				//$this->session->set_flashdata('error', "Jumlah bayar tidak boleh kosong");
+				//redirect('transaksi');
+			//}
+			
+			
+			
+			
+			
+			
+			
+			if ($this->input->post('bayar') > 0) {
+				$tanggal = $this->input->post('tanggal');
+				$data['tanggal'] = $tanggal;
+				$discount = $this->input->post('discount');
+				$data['discount'] = $discount;
+				$total_bersih = $this->input->post('total_bersih');
+				$data['total_bersih'] = $total_bersih;
+				$bayar = $this->input->post('bayar');
+				$data['bayar'] = $bayar;
+				$sisa = $this->input->post('sisa');
+				$data['sisa'] = $sisa;
+				$data ['row'] = $this->transaksi_models->get()->result();
+				$this->transaksi_models->simpanDetail($post);
+				$this->transaksi_models->simpan($post);
+				$this->transaksi_models->emp();
+				
+				$this->load->view('transaksi/cetak_nota', $data);
+			} else {
+				$this->session->set_flashdata('error', "Jumlah bayar tidak boleh kosong");
+				redirect('transaksi');
+			} 	
